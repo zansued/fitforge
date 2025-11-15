@@ -1,32 +1,82 @@
-import { useState, useEffect } from "react";
-import { Exercise } from "@/entities/all";
+import React, { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Plus, Sparkles } from "lucide-react";
 
 import ExerciseGrid from "../components/library/ExerciseGrid";
 import ExerciseFilters from "../components/library/ExerciseFilters";
 import ExerciseModal from "../components/library/ExerciseModal";
+import ExerciseForm from "../components/library/ExerciseForm";
+import ExerciseAIGenerator from "../components/library/ExerciseAIGenerator";
 
 export default function ExerciseLibrary() {
-  const [exercises, setExercises] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedExercise, setSelectedExercise] = useState(null);
+  const [editingExercise, setEditingExercise] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [showAIGenerator, setShowAIGenerator] = useState(false);
   const [filters, setFilters] = useState({ category: "all", difficulty: "all", equipment: "all" });
-  const [isLoading, setIsLoading] = useState(true);
+  
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    loadExercises();
-  }, []);
+  const { data: exercises, isLoading } = useQuery({
+    queryKey: ['exercises'],
+    queryFn: () => base44.entities.Exercise.list("-created_date"),
+    initialData: [],
+  });
 
-  const loadExercises = async () => {
-    setIsLoading(true);
-    try {
-      const allExercises = await Exercise.list("-created_date");
-      setExercises(allExercises);
-    } catch (error) {
-      console.error("Erro ao carregar exercícios:", error);
+  const createMutation = useMutation({
+    mutationFn: (newExercise) => base44.entities.Exercise.create(newExercise),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['exercises'] });
+      setShowForm(false);
+      setEditingExercise(null);
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.Exercise.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['exercises'] });
+      setShowForm(false);
+      setEditingExercise(null);
+      setSelectedExercise(null);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.Exercise.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['exercises'] });
+      setSelectedExercise(null);
+    },
+  });
+
+  const handleSave = (data) => {
+    if (editingExercise) {
+      updateMutation.mutate({ id: editingExercise.id, data });
+    } else {
+      createMutation.mutate(data);
     }
-    setIsLoading(false);
+  };
+
+  const handleEdit = (exercise) => {
+    setEditingExercise(exercise);
+    setShowForm(true);
+    setSelectedExercise(null);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Tem certeza que deseja excluir este exercício?")) {
+      deleteMutation.mutate(id);
+    }
+  };
+
+  const handleAIGenerated = () => {
+    setShowAIGenerator(false);
+    queryClient.invalidateQueries({ queryKey: ['exercises'] });
   };
 
   const filteredExercises = exercises.filter(exercise => {
@@ -51,6 +101,26 @@ export default function ExerciseLibrary() {
               Explore e aprenda novos exercícios
             </p>
           </div>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setShowAIGenerator(true)}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              Gerar com IA
+            </Button>
+            <Button
+              onClick={() => {
+                setEditingExercise(null);
+                setShowForm(true);
+              }}
+              variant="outline"
+              className="shadow-lg"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Adicionar
+            </Button>
+          </div>
         </div>
 
         <div className="mb-6">
@@ -71,12 +141,34 @@ export default function ExerciseLibrary() {
           exercises={filteredExercises}
           isLoading={isLoading}
           onSelectExercise={setSelectedExercise}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
         />
 
         {selectedExercise && (
           <ExerciseModal
             exercise={selectedExercise}
             onClose={() => setSelectedExercise(null)}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        )}
+
+        {showForm && (
+          <ExerciseForm
+            exercise={editingExercise}
+            onSave={handleSave}
+            onCancel={() => {
+              setShowForm(false);
+              setEditingExercise(null);
+            }}
+          />
+        )}
+
+        {showAIGenerator && (
+          <ExerciseAIGenerator
+            onClose={() => setShowAIGenerator(false)}
+            onGenerated={handleAIGenerated}
           />
         )}
       </div>

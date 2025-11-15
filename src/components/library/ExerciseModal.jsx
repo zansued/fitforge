@@ -1,8 +1,10 @@
+import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Info, Lightbulb } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dumbbell, Info, Lightbulb, Edit, Trash2 } from "lucide-react";
 
-export default function ExerciseModal({ exercise, onClose }) {
+export default function ExerciseModal({ exercise, onClose, onEdit, onDelete }) {
   const categoryColors = {
     peito: "bg-purple-100 text-purple-700 border-purple-200",
     costas: "bg-blue-100 text-blue-700 border-blue-200",
@@ -17,7 +19,27 @@ export default function ExerciseModal({ exercise, onClose }) {
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl">{exercise.name}</DialogTitle>
+          <div className="flex items-start justify-between">
+            <DialogTitle className="text-2xl">{exercise.name}</DialogTitle>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onEdit(exercise)}
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                Editar
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onDelete(exercise.id)}
+                className="text-red-600 hover:text-red-700"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
         </DialogHeader>
 
         <div className="space-y-6">

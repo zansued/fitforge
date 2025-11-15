@@ -1,8 +1,10 @@
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dumbbell } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dumbbell, Edit, Trash2 } from "lucide-react";
 
-export default function ExerciseGrid({ exercises, isLoading, onSelectExercise }) {
+export default function ExerciseGrid({ exercises, isLoading, onSelectExercise, onEdit, onDelete }) {
   const categoryColors = {
     peito: "bg-purple-100 text-purple-700 border-purple-200",
     costas: "bg-blue-100 text-blue-700 border-blue-200",
@@ -28,7 +30,7 @@ export default function ExerciseGrid({ exercises, isLoading, onSelectExercise })
         <CardContent className="p-12 text-center">
           <Dumbbell className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-500 text-lg">Nenhum exercício encontrado</p>
-          <p className="text-sm text-gray-400 mt-2">Tente ajustar os filtros</p>
+          <p className="text-sm text-gray-400 mt-2">Tente ajustar os filtros ou adicione novos exercícios</p>
         </CardContent>
       </Card>
     );
@@ -39,10 +41,12 @@ export default function ExerciseGrid({ exercises, isLoading, onSelectExercise })
       {exercises.map((exercise) => (
         <Card
           key={exercise.id}
-          className="border-none shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group overflow-hidden"
-          onClick={() => onSelectExercise(exercise)}
+          className="border-none shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden"
         >
-          <div className="h-48 bg-gradient-to-br from-purple-400 to-blue-500 relative overflow-hidden">
+          <div 
+            className="h-48 bg-gradient-to-br from-purple-400 to-blue-500 relative overflow-hidden cursor-pointer"
+            onClick={() => onSelectExercise(exercise)}
+          >
             {exercise.image_url ? (
               <img
                 src={exercise.image_url}
@@ -56,9 +60,38 @@ export default function ExerciseGrid({ exercises, isLoading, onSelectExercise })
             )}
           </div>
           <CardContent className="p-6">
-            <h3 className="font-bold text-lg mb-2 group-hover:text-purple-600 transition-colors">
-              {exercise.name}
-            </h3>
+            <div className="flex items-start justify-between mb-2">
+              <h3 
+                className="font-bold text-lg group-hover:text-purple-600 transition-colors cursor-pointer flex-1"
+                onClick={() => onSelectExercise(exercise)}
+              >
+                {exercise.name}
+              </h3>
+              <div className="flex gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-gray-500 hover:text-purple-600"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit(exercise);
+                  }}
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-gray-500 hover:text-red-600"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(exercise.id);
+                  }}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
             <p className="text-sm text-gray-600 mb-4 line-clamp-2">
               {exercise.instructions}
             </p>
