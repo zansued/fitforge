@@ -1,7 +1,7 @@
-
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Dumbbell, User, BookOpen, TrendingUp, Menu, ChefHat } from "lucide-react";
+import { Home, Dumbbell, User, BookOpen, TrendingUp, Menu, ChefHat, Activity } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -40,6 +40,11 @@ const navigationItems = [
     title: "Progresso",
     url: createPageUrl("Progresso"),
     icon: TrendingUp,
+  },
+  {
+    title: "Saúde",
+    url: createPageUrl("Saude"),
+    icon: Activity,
   },
   {
     title: "Biblioteca",

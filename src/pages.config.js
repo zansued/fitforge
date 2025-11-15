@@ -4,6 +4,7 @@ import Workouts from './pages/Workouts';
 import ExerciseLibrary from './pages/ExerciseLibrary';
 import Recipes from './pages/Recipes';
 import Progresso from './pages/Progresso';
+import Saude from './pages/Saude';
 import Layout from './Layout.jsx';
 
 
@@ -14,6 +15,7 @@ export const PAGES = {
     "ExerciseLibrary": ExerciseLibrary,
     "Recipes": Recipes,
     "Progresso": Progresso,
+    "Saude": Saude,
 }
 
 export const pagesConfig = {
