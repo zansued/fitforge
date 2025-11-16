@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -75,12 +74,17 @@ export default function RecipeForm({ recipe, onSave, onCancel }) {
     }
     setIsGeneratingImage(true);
     try {
-        const imagePrompt = `Fotografia de comida profissional e deliciosa de "${formData.title}", em um prato, com iluminação de estúdio, super detalhada.`;
+        const imagePrompt = `Professional food photography: delicious ${formData.title}, on a plate, studio lighting, highly detailed, appetizing`;
         const imageResponse = await base44.integrations.Core.GenerateImage({ prompt: imagePrompt });
-        setFormData({ ...formData, image_url: imageResponse.url });
+        
+        if (imageResponse && imageResponse.url) {
+          setFormData({ ...formData, image_url: imageResponse.url });
+        } else {
+          throw new Error("Imagem não gerada");
+        }
     } catch (error) {
         console.error("Erro ao gerar imagem:", error);
-        alert("Não foi possível gerar a imagem. Tente novamente.");
+        alert(`Erro ao gerar imagem: ${error.message || "Tente novamente ou insira uma URL manualmente"}`);
     } finally {
         setIsGeneratingImage(false);
     }
