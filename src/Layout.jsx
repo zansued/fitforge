@@ -20,36 +20,92 @@ const navigationItems = [
     title: "Início",
     url: createPageUrl("Home"),
     icon: Home,
+    colors: {
+      bg: "bg-blue-50",
+      bgHover: "hover:bg-blue-100",
+      bgActive: "bg-blue-500",
+      text: "text-blue-700",
+      textActive: "text-white",
+      border: "border-blue-200"
+    }
   },
   {
     title: "Meu Perfil",
     url: createPageUrl("Profile"),
     icon: User,
+    colors: {
+      bg: "bg-purple-50",
+      bgHover: "hover:bg-purple-100",
+      bgActive: "bg-purple-500",
+      text: "text-purple-700",
+      textActive: "text-white",
+      border: "border-purple-200"
+    }
   },
   {
     title: "Meus Treinos",
     url: createPageUrl("Workouts"),
     icon: Dumbbell,
+    colors: {
+      bg: "bg-orange-50",
+      bgHover: "hover:bg-orange-100",
+      bgActive: "bg-orange-500",
+      text: "text-orange-700",
+      textActive: "text-white",
+      border: "border-orange-200"
+    }
   },
   {
     title: "Receitas",
     url: createPageUrl("Recipes"),
     icon: ChefHat,
+    colors: {
+      bg: "bg-green-50",
+      bgHover: "hover:bg-green-100",
+      bgActive: "bg-green-500",
+      text: "text-green-700",
+      textActive: "text-white",
+      border: "border-green-200"
+    }
   },
   {
     title: "Progresso",
     url: createPageUrl("Progresso"),
     icon: TrendingUp,
+    colors: {
+      bg: "bg-cyan-50",
+      bgHover: "hover:bg-cyan-100",
+      bgActive: "bg-cyan-500",
+      text: "text-cyan-700",
+      textActive: "text-white",
+      border: "border-cyan-200"
+    }
   },
   {
     title: "Saúde",
     url: createPageUrl("Saude"),
     icon: Activity,
+    colors: {
+      bg: "bg-pink-50",
+      bgHover: "hover:bg-pink-100",
+      bgActive: "bg-pink-500",
+      text: "text-pink-700",
+      textActive: "text-white",
+      border: "border-pink-200"
+    }
   },
   {
     title: "Biblioteca",
     url: createPageUrl("ExerciseLibrary"),
     icon: BookOpen,
+    colors: {
+      bg: "bg-indigo-50",
+      bgHover: "hover:bg-indigo-100",
+      bgActive: "bg-indigo-500",
+      text: "text-indigo-700",
+      textActive: "text-white",
+      border: "border-indigo-200"
+    }
   },
 ];
 
@@ -78,25 +134,28 @@ export default function Layout({ children }) {
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-2">
-                  {navigationItems.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton 
-                        asChild 
-                        className={`
-                          hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50
-                          transition-all duration-200 rounded-xl
-                          ${location.pathname === item.url 
-                            ? 'bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 shadow-sm' 
-                            : 'text-gray-700'}
-                        `}
-                      >
-                        <Link to={item.url} className="flex items-center gap-3 px-4 py-3">
-                          <item.icon className="w-5 h-5" />
-                          <span className="font-medium">{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
+                  {navigationItems.map((item) => {
+                    const isActive = location.pathname === item.url;
+                    return (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton 
+                          asChild 
+                          className={`
+                            transition-all duration-200 rounded-xl border-2
+                            ${isActive 
+                              ? `${item.colors.bgActive} ${item.colors.textActive} shadow-lg border-transparent` 
+                              : `${item.colors.bg} ${item.colors.text} ${item.colors.bgHover} ${item.colors.border}`
+                            }
+                          `}
+                        >
+                          <Link to={item.url} className="flex items-center gap-3 px-4 py-3">
+                            <item.icon className="w-6 h-6" />
+                            <span className="font-semibold text-base">{item.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
