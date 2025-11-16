@@ -48,10 +48,10 @@ export default function ExerciseAIGenerator({ onClose, onGenerated }) {
 O exercício deve ser:
 - Único e criativo (não os mesmos exercícios tradicionais que todo mundo conhece)
 - Seguro e anatomicamente correto
-- Com instruções passo a passo muito detalhadas
+- Com instruções passo a passo muito detalhadas (pelo menos 5 passos)
 - Com dicas importantes para execução correta
 
-Forneça um exercício completo e profissional.`;
+Forneça APENAS o JSON, sem texto adicional.`;
 
       const exerciseResponse = await base44.integrations.Core.InvokeLLM({
         prompt: prompt,
@@ -66,38 +66,46 @@ Forneça um exercício completo e profissional.`;
         }
       });
 
-      if (exerciseResponse && exerciseResponse.name) {
-        setGenerationStep("Gerando imagem do exercício...");
-        
-        const imagePrompt = `Fotografia profissional e detalhada de uma pessoa executando o exercício de musculação "${exerciseResponse.name}", mostrando a forma correta, em uma academia moderna, iluminação profissional.`;
-        const imageResponse = await base44.integrations.Core.GenerateImage({ 
-          prompt: imagePrompt 
-        });
-
-        const fullExercise = {
-          name: exerciseResponse.name,
-          category: category,
-          equipment: equipment,
-          difficulty: difficulty,
-          instructions: exerciseResponse.instructions,
-          tips: exerciseResponse.tips || "",
-          image_url: imageResponse.url,
-          video_url: ""
-        };
-
-        await base44.entities.Exercise.create(fullExercise);
-        onGenerated();
-      } else {
+      if (!exerciseResponse || !exerciseResponse.name) {
         throw new Error("A IA não retornou um exercício válido.");
       }
 
+      let imageUrl = "";
+      try {
+        setGenerationStep("Gerando imagem do exercício...");
+        
+        const imagePrompt = `Professional fitness photography of a person performing the exercise "${exerciseResponse.name}", correct form, modern gym, professional lighting, high quality`;
+        const imageResponse = await base44.integrations.Core.GenerateImage({ 
+          prompt: imagePrompt 
+        });
+        
+        if (imageResponse && imageResponse.url) {
+          imageUrl = imageResponse.url;
+        }
+      } catch (imageError) {
+        console.error("Erro ao gerar imagem:", imageError);
+      }
+
+      const fullExercise = {
+        name: exerciseResponse.name,
+        category: category,
+        equipment: equipment,
+        difficulty: difficulty,
+        instructions: exerciseResponse.instructions,
+        tips: exerciseResponse.tips || "",
+        image_url: imageUrl,
+        video_url: ""
+      };
+
+      await base44.entities.Exercise.create(fullExercise);
+      onGenerated();
+
     } catch (error) {
-      console.error("Erro ao gerar exercício:", error);
-      alert("Houve um problema ao gerar o exercício. Por favor, tente novamente.");
+      console.error("Erro completo:", error);
+      alert(`Erro ao gerar exercício: ${error.message || "Tente novamente"}`);
+      setIsGenerating(false);
+      setGenerationStep("");
     }
-    
-    setIsGenerating(false);
-    setGenerationStep("");
   };
 
   return (
