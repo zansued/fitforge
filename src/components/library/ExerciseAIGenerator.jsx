@@ -39,42 +39,53 @@ export default function ExerciseAIGenerator({ onClose, onGenerated }) {
     try {
       setGenerationStep("Criando exercício...");
       
-      const prompt = `Crie um exercício de musculação completo e detalhado com as seguintes características:
-      
-- Categoria (grupo muscular): ${categoryLabels[category]}
-- Equipamento necessário: ${equipmentLabels[equipment]}
-- Nível de dificuldade: ${difficulty}
+      const prompt = `Você é um personal trainer especialista. Crie um exercício de musculação criativo e eficaz.
 
-O exercício deve ser:
-- Único e criativo (não os mesmos exercícios tradicionais que todo mundo conhece)
-- Seguro e anatomicamente correto
-- Com instruções passo a passo muito detalhadas (pelo menos 5 passos)
-- Com dicas importantes para execução correta
+Características do exercício:
+- Grupo muscular: ${categoryLabels[category]}
+- Equipamento: ${equipmentLabels[equipment]}
+- Dificuldade: ${difficulty}
 
-Forneça APENAS o JSON, sem texto adicional.`;
+Crie um exercício único (não os mais comuns), com:
+1. Um nome criativo em português
+2. Instruções detalhadas de execução (mínimo 5 passos)
+3. Dicas importantes para maximizar resultados e evitar lesões
 
-      const exerciseResponse = await base44.integrations.Core.InvokeLLM({
+Seja criativo mas mantenha a segurança e eficácia.`;
+
+      const exerciseData = await base44.integrations.Core.InvokeLLM({
         prompt: prompt,
         response_json_schema: {
           type: "object",
           properties: {
-            name: { type: "string" },
-            instructions: { type: "string" },
-            tips: { type: "string" }
+            name: { 
+              type: "string",
+              description: "Nome do exercício em português"
+            },
+            instructions: { 
+              type: "string",
+              description: "Instruções detalhadas passo a passo"
+            },
+            tips: { 
+              type: "string",
+              description: "Dicas importantes"
+            }
           },
-          required: ["name", "instructions"]
+          required: ["name", "instructions", "tips"]
         }
       });
 
-      if (!exerciseResponse || !exerciseResponse.name) {
-        throw new Error("A IA não retornou um exercício válido.");
+      console.log("Resposta da IA:", exerciseData);
+
+      if (!exerciseData || !exerciseData.name || !exerciseData.instructions) {
+        throw new Error("Dados incompletos retornados pela IA");
       }
 
       let imageUrl = "";
       try {
-        setGenerationStep("Gerando imagem do exercício...");
+        setGenerationStep("Gerando imagem...");
         
-        const imagePrompt = `Professional fitness photography of a person performing the exercise "${exerciseResponse.name}", correct form, modern gym, professional lighting, high quality`;
+        const imagePrompt = `Professional fitness photography: person performing ${exerciseData.name} exercise, proper form, gym environment, high quality, detailed`;
         const imageResponse = await base44.integrations.Core.GenerateImage({ 
           prompt: imagePrompt 
         });
@@ -83,16 +94,18 @@ Forneça APENAS o JSON, sem texto adicional.`;
           imageUrl = imageResponse.url;
         }
       } catch (imageError) {
-        console.error("Erro ao gerar imagem:", imageError);
+        console.warn("Não foi possível gerar imagem, continuando sem ela:", imageError);
       }
 
+      setGenerationStep("Salvando exercício...");
+
       const fullExercise = {
-        name: exerciseResponse.name,
+        name: exerciseData.name,
         category: category,
         equipment: equipment,
         difficulty: difficulty,
-        instructions: exerciseResponse.instructions,
-        tips: exerciseResponse.tips || "",
+        instructions: exerciseData.instructions,
+        tips: exerciseData.tips || "",
         image_url: imageUrl,
         video_url: ""
       };
@@ -101,8 +114,9 @@ Forneça APENAS o JSON, sem texto adicional.`;
       onGenerated();
 
     } catch (error) {
-      console.error("Erro completo:", error);
-      alert(`Erro ao gerar exercício: ${error.message || "Tente novamente"}`);
+      console.error("Erro ao gerar exercício:", error);
+      alert(`Erro: ${error.message || "Falha ao gerar exercício. Tente novamente."}`);
+    } finally {
       setIsGenerating(false);
       setGenerationStep("");
     }
@@ -125,13 +139,13 @@ Forneça APENAS o JSON, sem texto adicional.`;
             </div>
             <h3 className="text-xl font-semibold mb-2">{generationStep}</h3>
             <p className="text-gray-600 max-w-md mx-auto">
-              Aguarde enquanto a IA cria um exercício personalizado para você...
+              Aguarde enquanto criamos seu exercício personalizado...
             </p>
           </div>
         ) : (
           <div className="space-y-6">
             <p className="text-gray-600">
-              Configure as características do exercício que você deseja gerar:
+              Configure as características do exercício:
             </p>
 
             <div className="space-y-4">
