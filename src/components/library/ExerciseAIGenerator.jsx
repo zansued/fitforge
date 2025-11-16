@@ -81,22 +81,6 @@ Seja criativo mas mantenha a segurança e eficácia.`;
         throw new Error("Dados incompletos retornados pela IA");
       }
 
-      let imageUrl = "";
-      try {
-        setGenerationStep("Gerando imagem...");
-        
-        const imagePrompt = `Professional fitness photography: person performing ${exerciseData.name} exercise, proper form, gym environment, high quality, detailed`;
-        const imageResponse = await base44.integrations.Core.GenerateImage({ 
-          prompt: imagePrompt 
-        });
-        
-        if (imageResponse && imageResponse.url) {
-          imageUrl = imageResponse.url;
-        }
-      } catch (imageError) {
-        console.warn("Não foi possível gerar imagem, continuando sem ela:", imageError);
-      }
-
       setGenerationStep("Salvando exercício...");
 
       const fullExercise = {
@@ -106,7 +90,7 @@ Seja criativo mas mantenha a segurança e eficácia.`;
         difficulty: difficulty,
         instructions: exerciseData.instructions,
         tips: exerciseData.tips || "",
-        image_url: imageUrl,
+        image_url: "",
         video_url: ""
       };
 

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2, Save, X, Sparkles, Loader2 } from "lucide-react";
+import { Plus, Trash2, Save, X } from "lucide-react";
 
 export default function RecipeForm({ recipe, onSave, onCancel }) {
   const [formData, setFormData] = useState(recipe || {
@@ -25,7 +25,6 @@ export default function RecipeForm({ recipe, onSave, onCancel }) {
     tags: [],
     image_url: ""
   });
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   const addIngredient = () => {
     setFormData({
@@ -65,29 +64,6 @@ export default function RecipeForm({ recipe, onSave, onCancel }) {
     const newInstructions = [...formData.instructions];
     newInstructions[index] = value;
     setFormData({...formData, instructions: newInstructions});
-  };
-
-  const handleGenerateImage = async () => {
-    if (!formData.title) {
-        alert("Por favor, preencha o nome da receita primeiro.");
-        return;
-    }
-    setIsGeneratingImage(true);
-    try {
-        const imagePrompt = `Professional food photography: delicious ${formData.title}, on a plate, studio lighting, highly detailed, appetizing`;
-        const imageResponse = await base44.integrations.Core.GenerateImage({ prompt: imagePrompt });
-        
-        if (imageResponse && imageResponse.url) {
-          setFormData({ ...formData, image_url: imageResponse.url });
-        } else {
-          throw new Error("Imagem não gerada");
-        }
-    } catch (error) {
-        console.error("Erro ao gerar imagem:", error);
-        alert(`Erro ao gerar imagem: ${error.message || "Tente novamente ou insira uma URL manualmente"}`);
-    } finally {
-        setIsGeneratingImage(false);
-    }
   };
 
   const handleSubmit = (e) => {
@@ -132,29 +108,13 @@ export default function RecipeForm({ recipe, onSave, onCancel }) {
             </div>
 
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="image_url">URL da Imagem</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="image_url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                  placeholder="https://... ou gere uma com IA"
-                />
-                <Button
-                  type="button"
-                  onClick={handleGenerateImage}
-                  disabled={isGeneratingImage || !formData.title}
-                  variant="outline"
-                  className="flex-shrink-0"
-                >
-                  {isGeneratingImage ? (
-                    <Loader2 className="w-4 h-4 animate-spin mr-1" />
-                  ) : (
-                    <Sparkles className="w-4 h-4 mr-1" />
-                  )}
-                  <span className="hidden sm:inline">Gerar</span>
-                </Button>
-              </div>
+              <Label htmlFor="image_url">URL da Imagem (opcional)</Label>
+              <Input
+                id="image_url"
+                value={formData.image_url}
+                onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                placeholder="https://..."
+              />
             </div>
 
             <div className="space-y-2">
