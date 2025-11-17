@@ -50,35 +50,40 @@ export default function ExameUploadForm({ onSave, onCancel }) {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
 
       setProcessingStep("Extraindo dados do exame...");
-      const extractionResult = await base44.integrations.Core.ExtractDataFromUploadedFile({
-        file_url: file_url,
-        json_schema: {
-          type: "object",
-          properties: {
-            resultados: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  parametro: { type: "string" },
-                  valor: { type: "string" },
-                  unidade: { type: "string" },
-                  referencia: { type: "string" }
+      let dadosExtraidos = null;
+      
+      try {
+        const extractionResult = await base44.integrations.Core.ExtractDataFromUploadedFile({
+          file_url: file_url,
+          json_schema: {
+            type: "object",
+            properties: {
+              resultados: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    parametro: { type: "string" },
+                    valor: { type: "string" },
+                    unidade: { type: "string" },
+                    referencia: { type: "string" }
+                  }
                 }
               }
             }
           }
-        }
-      });
+        });
 
-      let dadosExtraidos = null;
-      if (extractionResult.status === "success" && extractionResult.output) {
-        dadosExtraidos = extractionResult.output;
+        if (extractionResult.status === "success" && extractionResult.output) {
+          dadosExtraidos = extractionResult.output;
+        }
+      } catch (extractError) {
+        console.log("Extração de dados falhou, continuando com análise de arquivo:", extractError);
       }
 
       setProcessingStep("Analisando com IA...");
       const analisePrompt = `Você é um assistente de saúde com conhecimento em análise de exames laboratoriais. 
-Analise os seguintes resultados de exame e forneça:
+Analise o arquivo de exame fornecido e forneça:
 1. Um resumo dos principais achados
 2. Valores que estão fora da faixa de referência (se houver)
 3. Recomendações gerais de estilo de vida e nutrição
@@ -89,11 +94,11 @@ IMPORTANTE: Deixe claro que esta é apenas uma análise informativa e não subst
 Tipo de exame: ${tipoExameLabels[formData.tipo_exame]}
 Data do exame: ${format(new Date(formData.data_exame), 'dd/MM/yyyy')}
 
-${dadosExtraidos ? `Dados extraídos do exame:\n${JSON.stringify(dadosExtraidos, null, 2)}` : 'Não foi possível extrair dados estruturados do arquivo. Faça uma análise geral baseada no tipo de exame.'}
+${dadosExtraidos ? `Dados extraídos:\n${JSON.stringify(dadosExtraidos, null, 2)}` : 'Analise o documento fornecido diretamente.'}
 
 ${formData.notas ? `Observações do paciente: ${formData.notas}` : ''}
 
-Forneça uma análise completa, didática e acessível.`;
+Forneça uma análise completa, didática e acessível em português.`;
 
       const analiseIA = await base44.integrations.Core.InvokeLLM({
         prompt: analisePrompt,
@@ -101,7 +106,9 @@ Forneça uma análise completa, didática e acessível.`;
       });
 
       const exameCompleto = {
-        ...formData,
+        data_exame: format(new Date(formData.data_exame), 'yyyy-MM-dd'),
+        tipo_exame: formData.tipo_exame,
+        notas: formData.notas,
         arquivo_url: file_url,
         dados_extraidos: dadosExtraidos,
         analise_ia: analiseIA
@@ -110,7 +117,7 @@ Forneça uma análise completa, didática e acessível.`;
       onSave(exameCompleto);
     } catch (error) {
       console.error("Erro ao processar exame:", error);
-      alert("Houve um erro ao processar o exame. Por favor, tente novamente.");
+      alert(`Erro ao processar: ${error.message || "Tente novamente."}`);
     } finally {
       setIsProcessing(false);
       setProcessingStep("");
