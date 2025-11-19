@@ -69,6 +69,19 @@ const navigationItems = [
     }
   },
   {
+    title: "Alimentos",
+    url: createPageUrl("FoodLibrary"),
+    icon: BookOpen,
+    colors: {
+      bg: "bg-emerald-50",
+      bgHover: "hover:bg-emerald-100",
+      bgActive: "bg-emerald-500",
+      text: "text-emerald-700",
+      textActive: "text-white",
+      border: "border-emerald-200"
+    }
+  },
+  {
     title: "Progresso",
     url: createPageUrl("Progresso"),
     icon: TrendingUp,
@@ -95,9 +108,9 @@ const navigationItems = [
     }
   },
   {
-    title: "Biblioteca",
+    title: "Exercícios",
     url: createPageUrl("ExerciseLibrary"),
-    icon: BookOpen,
+    icon: Dumbbell,
     colors: {
       bg: "bg-indigo-50",
       bgHover: "hover:bg-indigo-100",

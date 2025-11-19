@@ -5,7 +5,8 @@ import ExerciseLibrary from './pages/ExerciseLibrary';
 import Recipes from './pages/Recipes';
 import Progresso from './pages/Progresso';
 import Saude from './pages/Saude';
-import Layout from './Layout.jsx';
+import FoodLibrary from './pages/FoodLibrary';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -16,10 +17,11 @@ export const PAGES = {
     "Recipes": Recipes,
     "Progresso": Progresso,
     "Saude": Saude,
+    "FoodLibrary": FoodLibrary,
 }
 
 export const pagesConfig = {
     mainPage: "Home",
     Pages: PAGES,
-    Layout: Layout,
+    Layout: __Layout,
 };
