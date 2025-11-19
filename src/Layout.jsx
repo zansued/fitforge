@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Dumbbell, User, BookOpen, TrendingUp, Menu, ChefHat, Activity } from "lucide-react";
+import { Home, Dumbbell, User, BookOpen, TrendingUp, Menu, ChefHat, Activity, Brain } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -108,6 +108,19 @@ const navigationItems = [
     }
   },
   {
+    title: "Bem-Estar",
+    url: createPageUrl("BemEstar"),
+    icon: Brain,
+    colors: {
+      bg: "bg-violet-50",
+      bgHover: "hover:bg-violet-100",
+      bgActive: "bg-violet-500",
+      text: "text-violet-700",
+      textActive: "text-white",
+      border: "border-violet-200"
+    }
+  },
+  {
     title: "Exercícios",
     url: createPageUrl("ExerciseLibrary"),
     icon: Dumbbell,
@@ -120,7 +133,7 @@ const navigationItems = [
       border: "border-indigo-200"
     }
   },
-];
+  ];
 
 export default function Layout({ children }) {
   const location = useLocation();

@@ -4,9 +4,9 @@ import { base44 } from "@/api/base44Client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, Send, Loader2 } from "lucide-react";
+import { Brain, Send, Loader2 } from "lucide-react";
 
-export default function FoodAIAssistant({ onClose }) {
+export default function AICoach({ entries, onClose }) {
   const [question, setQuestion] = useState("");
   const [conversation, setConversation] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,18 +20,26 @@ export default function FoodAIAssistant({ onClose }) {
     setIsLoading(true);
 
     try {
-      const prompt = `Você é um nutricionista especializado. Responda à seguinte pergunta sobre alimentos e nutrição de forma clara, didática e baseada em evidências científicas.
+      const recentEntries = entries.slice(0, 7);
+      const context = recentEntries.length > 0 
+        ? `Histórico recente do usuário (últimos 7 dias):\n${recentEntries.map(e => 
+            `- ${e.date}: Humor ${e.mood}, Intensidade ${e.intensity}/10, Sono: ${e.sleep_hours || 0}h`
+          ).join('\n')}`
+        : "Usuário ainda não tem registros.";
 
-Pergunta: ${userMessage}
+      const prompt = `Você é um psicólogo especializado em bem-estar mental e coach de vida. Seja empático, acolhedor e prático.
 
-Forneça informações práticas e úteis sobre:
-- Valores nutricionais e macros
-- Benefícios para a saúde
-- Como incluir na dieta
-- Combinações de alimentos
-- Recomendações para diferentes objetivos (emagrecimento, ganho de massa, etc.)
+${context}
 
-Seja objetivo e acessível.`;
+Pergunta do usuário: ${userMessage}
+
+Forneça uma resposta construtiva que:
+1. Valide os sentimentos
+2. Ofereça insights baseados no histórico (se houver)
+3. Sugira técnicas práticas ou exercícios
+4. Seja motivador e realista
+
+IMPORTANTE: Lembre que você é um assistente e não substitui terapia profissional. Se identificar sinais graves, sugira buscar ajuda profissional.`;
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: prompt
@@ -50,11 +58,11 @@ Seja objetivo e acessível.`;
   };
 
   const quickQuestions = [
-    "Quais alimentos são ricos em proteína?",
-    "Melhores fontes de carboidratos complexos",
-    "Alimentos para ganhar massa muscular",
-    "Opções saudáveis para lanches",
-    "Alimentos ricos em vitaminas e minerais"
+    "Como posso melhorar meu humor?",
+    "Dicas para lidar com ansiedade",
+    "Como ter uma rotina mais equilibrada?",
+    "Técnicas de mindfulness para iniciantes",
+    "Como melhorar a qualidade do sono?"
   ];
 
   return (
@@ -62,8 +70,8 @@ Seja objetivo e acessível.`;
       <DialogContent className="sm:max-w-3xl h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
-            <Sparkles className="w-6 h-6 text-purple-600" />
-            Assistente Nutricional IA
+            <Brain className="w-6 h-6 text-purple-600" />
+            Coach de Bem-Estar IA
           </DialogTitle>
         </DialogHeader>
 
@@ -71,7 +79,7 @@ Seja objetivo e acessível.`;
           {conversation.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-gray-600 mb-6">
-                Pergunte qualquer coisa sobre alimentos e nutrição!
+                Converse comigo sobre seu bem-estar mental e emocional
               </p>
               <div className="space-y-2">
                 <p className="text-sm font-semibold text-gray-700 mb-3">Perguntas sugeridas:</p>
@@ -124,7 +132,7 @@ Seja objetivo e acessível.`;
           <Textarea
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Digite sua pergunta sobre alimentos..."
+            placeholder="Digite sua pergunta..."
             rows={2}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
