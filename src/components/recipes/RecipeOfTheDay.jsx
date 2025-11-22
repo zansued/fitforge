@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -86,7 +85,17 @@ Por favor, forneça todos os detalhes, incluindo informações nutricionais por 
           servings: { type: "number" },
           calories_per_serving: { type: "number" },
           protein_grams: { type: "number" },
-          ingredients: { type: "array", items: { type: "string" } },
+          ingredients: { 
+            type: "array", 
+            items: { 
+              type: "object",
+              properties: {
+                food_name: { type: "string" },
+                quantity: { type: "number" },
+                notes: { type: "string" }
+              }
+            } 
+          },
           instructions: { type: "array", items: { type: "string" } },
         },
         required: ["title", "category", "ingredients", "instructions"],
@@ -264,7 +273,12 @@ Por favor, forneça todos os detalhes, incluindo informações nutricionais por 
                   {recipe.ingredients?.map((ingredient, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <span className="text-orange-500 mt-1">•</span>
-                      <span className="text-gray-700">{ingredient}</span>
+                      <span className="text-gray-700">
+                        {typeof ingredient === 'string' 
+                          ? ingredient 
+                          : `${ingredient.food_name} (${ingredient.quantity}g) ${ingredient.notes ? '- ' + ingredient.notes : ''}`
+                        }
+                      </span>
                     </li>
                   ))}
                 </ul>
