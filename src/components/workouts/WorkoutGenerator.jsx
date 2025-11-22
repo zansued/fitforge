@@ -21,10 +21,42 @@ Crie um treino completo e detalhado, apropriado para o nível e objetivo da pess
 Inclua 6-8 exercícios variados com séries, repetições e tempo de descanso.
 O treino deve durar entre 45-60 minutos.`;
 
-      const schema = await base44.entities.Workout.schema();
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: prompt,
-        response_json_schema: schema
+        response_json_schema: {
+          type: "object",
+          properties: {
+            title: { type: "string" },
+            description: { type: "string" },
+            type: { 
+              type: "string",
+              enum: ["forca", "cardio", "hiit", "funcional", "alongamento", "fullbody"]
+            },
+            difficulty: {
+              type: "string",
+              enum: ["iniciante", "intermediario", "avancado"]
+            },
+            duration_minutes: { type: "number" },
+            exercises: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  sets: { type: "number" },
+                  reps: { type: "string" },
+                  rest_seconds: { type: "number" },
+                  notes: { type: "string" }
+                }
+              }
+            },
+            target_muscle_groups: {
+              type: "array",
+              items: { type: "string" }
+            }
+          },
+          required: ["title", "type", "difficulty", "exercises"]
+        }
       });
 
       await base44.entities.Workout.create(response);
