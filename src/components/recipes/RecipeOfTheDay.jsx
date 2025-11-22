@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sparkles, Loader2, Clock, Users, Flame } from "lucide-react";
 
-export default function RecipeOfTheDay({ profile }) {
+export default function RecipeOfTheDay({ profile, onRecipeSaved }) {
   const [recipe, setRecipe] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationStep, setGenerationStep] = useState("");
@@ -139,6 +139,10 @@ Por favor, forneça todos os detalhes, incluindo informações nutricionais por 
     try {
       await base44.entities.Recipe.create(recipe);
       alert("Receita salva com sucesso!");
+      setRecipe(null);
+      if (onRecipeSaved) {
+        onRecipeSaved();
+      }
     } catch (error) {
       console.error("Erro ao salvar receita:", error);
       alert("Erro ao salvar receita.");

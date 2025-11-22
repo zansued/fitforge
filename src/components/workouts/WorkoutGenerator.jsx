@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { Workout } from "@/entities/all";
-import { InvokeLLM } from "@/integrations/Core";
+import React, { useState } from "react";
+import { base44 } from "@/api/base44Client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Loader2 } from "lucide-react";
@@ -22,12 +21,13 @@ Crie um treino completo e detalhado, apropriado para o nível e objetivo da pess
 Inclua 6-8 exercícios variados com séries, repetições e tempo de descanso.
 O treino deve durar entre 45-60 minutos.`;
 
-      const response = await InvokeLLM({
+      const schema = await base44.entities.Workout.schema();
+      const response = await base44.integrations.Core.InvokeLLM({
         prompt: prompt,
-        response_json_schema: Workout.schema()
+        response_json_schema: schema
       });
 
-      await Workout.create(response);
+      await base44.entities.Workout.create(response);
       onGenerated();
     } catch (error) {
       console.error("Erro ao gerar treino:", error);

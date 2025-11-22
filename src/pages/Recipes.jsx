@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Sparkles, Plus } from "lucide-react";
 
 import RecipeOfTheDay from "../components/recipes/RecipeOfTheDay";
 import RecipesList from "../components/recipes/RecipesList";
@@ -113,7 +113,7 @@ export default function Recipes() {
           </Button>
         </div>
 
-        <RecipeOfTheDay profile={profile} />
+        <RecipeOfTheDay profile={profile} onRecipeSaved={loadData} />
 
         <div className="mt-8">
           <RecipeFilters filters={filters} onFilterChange={setFilters} />
