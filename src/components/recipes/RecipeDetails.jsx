@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, Flame, Heart, Edit, Trash2 } from "lucide-react";
+import { Clock, Users, Flame, Heart, Edit, Trash2, Share2 } from "lucide-react";
+import ShareRecipe from "./ShareRecipe";
 
 export default function RecipeDetails({ recipe, onClose, onEdit, onDelete, onToggleFavorite }) {
+  const [showShare, setShowShare] = useState(false);
+
   const categoryColors = {
     cafe_da_manha: "bg-yellow-100 text-yellow-700 border-yellow-200",
     almoco: "bg-green-100 text-green-700 border-green-200",
@@ -32,6 +35,14 @@ export default function RecipeDetails({ recipe, onClose, onEdit, onDelete, onTog
           <div className="flex items-start justify-between">
             <DialogTitle className="text-2xl pr-12">{recipe.title}</DialogTitle>
             <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowShare(true)}
+                title="Compartilhar"
+              >
+                <Share2 className="w-5 h-5 text-blue-600" />
+              </Button>
               <Button
                 variant="ghost"
                 size="icon"
@@ -139,11 +150,26 @@ export default function RecipeDetails({ recipe, onClose, onEdit, onDelete, onTog
                 </span>
                 Ingredientes
               </h4>
-              <ul className="space-y-2 bg-gray-50 rounded-lg p-4">
+              <ul className="space-y-3 bg-gray-50 rounded-lg p-4">
                 {recipe.ingredients?.map((ingredient, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="text-purple-500 mt-1">•</span>
-                    <span className="text-gray-700">{ingredient}</span>
+                  <li key={idx} className="border-b pb-2 last:border-0">
+                    {typeof ingredient === 'string' ? (
+                      <div className="flex items-start gap-2">
+                        <span className="text-purple-500 mt-1">•</span>
+                        <span className="text-gray-700">{ingredient}</span>
+                      </div>
+                    ) : (
+                      <div>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-purple-500">•</span>
+                          <span className="font-medium text-gray-900">{ingredient.food_name}</span>
+                          <span className="text-sm text-gray-500">({ingredient.quantity}g)</span>
+                        </div>
+                        {ingredient.notes && (
+                          <p className="text-sm text-gray-600 ml-5">{ingredient.notes}</p>
+                        )}
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -169,6 +195,13 @@ export default function RecipeDetails({ recipe, onClose, onEdit, onDelete, onTog
             </div>
           </div>
         </div>
+
+        {showShare && (
+          <ShareRecipe
+            recipe={recipe}
+            onClose={() => setShowShare(false)}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

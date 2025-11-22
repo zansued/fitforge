@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, Save, X } from "lucide-react";
+import IngredientSelector from "./IngredientSelector";
 
 export default function RecipeForm({ recipe, onSave, onCancel }) {
   const [formData, setFormData] = useState(recipe || {
@@ -20,31 +21,47 @@ export default function RecipeForm({ recipe, onSave, onCancel }) {
     protein_grams: 0,
     carbs_grams: 0,
     fat_grams: 0,
-    ingredients: [""],
+    ingredients: [],
     instructions: [""],
     tags: [],
     image_url: ""
   });
 
-  const addIngredient = () => {
-    setFormData({
-      ...formData,
-      ingredients: [...formData.ingredients, ""]
+  const calculateNutrition = () => {
+    let totalCalories = 0;
+    let totalProtein = 0;
+    let totalCarbs = 0;
+    let totalFat = 0;
+
+    formData.ingredients.forEach(ing => {
+      if (ing.food_id && ing.quantity) {
+        // Buscar dados do alimento
+        base44.entities.Food.filter({ id: ing.food_id }).then(foods => {
+          if (foods.length > 0) {
+            const food = foods[0];
+            const multiplier = ing.quantity / (food.serving_size || 100);
+            totalCalories += (food.calories || 0) * multiplier;
+            totalProtein += (food.protein_grams || 0) * multiplier;
+            totalCarbs += (food.carbs_grams || 0) * multiplier;
+            totalFat += (food.fat_grams || 0) * multiplier;
+          }
+        });
+      }
     });
+
+    setTimeout(() => {
+      const servings = formData.servings || 1;
+      setFormData(prev => ({
+        ...prev,
+        calories_per_serving: Math.round(totalCalories / servings),
+        protein_grams: Math.round(totalProtein / servings),
+        carbs_grams: Math.round(totalCarbs / servings),
+        fat_grams: Math.round(totalFat / servings)
+      }));
+    }, 500);
   };
 
-  const removeIngredient = (index) => {
-    setFormData({
-      ...formData,
-      ingredients: formData.ingredients.filter((_, i) => i !== index)
-    });
-  };
 
-  const updateIngredient = (index, value) => {
-    const newIngredients = [...formData.ingredients];
-    newIngredients[index] = value;
-    setFormData({...formData, ingredients: newIngredients});
-  };
 
   const addInstruction = () => {
     setFormData({
@@ -70,7 +87,7 @@ export default function RecipeForm({ recipe, onSave, onCancel }) {
     e.preventDefault();
     const cleanedData = {
       ...formData,
-      ingredients: formData.ingredients.filter(i => i.trim()),
+      ingredients: formData.ingredients.filter(i => i.food_id || i.food_name),
       instructions: formData.instructions.filter(i => i.trim())
     };
     onSave(cleanedData);
@@ -212,32 +229,20 @@ export default function RecipeForm({ recipe, onSave, onCancel }) {
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label>Ingredientes *</Label>
-              <Button type="button" size="sm" variant="outline" onClick={addIngredient}>
-                <Plus className="w-4 h-4 mr-1" /> Adicionar
+              <Label>Ingredientes da Biblioteca *</Label>
+              <Button 
+                type="button" 
+                size="sm" 
+                variant="outline" 
+                onClick={calculateNutrition}
+              >
+                Calcular Nutrição
               </Button>
             </div>
-            <div className="space-y-2">
-              {formData.ingredients.map((ingredient, index) => (
-                <div key={index} className="flex gap-2">
-                  <Input
-                    value={ingredient}
-                    onChange={(e) => updateIngredient(index, e.target.value)}
-                    placeholder={`Ingrediente ${index + 1}`}
-                  />
-                  {formData.ingredients.length > 1 && (
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => removeIngredient(index)}
-                    >
-                      <Trash2 className="w-4 h-4 text-red-500" />
-                    </Button>
-                  )}
-                </div>
-              ))}
-            </div>
+            <IngredientSelector
+              ingredients={formData.ingredients}
+              onChange={(ingredients) => setFormData({...formData, ingredients})}
+            />
           </div>
 
           <div className="space-y-3">
