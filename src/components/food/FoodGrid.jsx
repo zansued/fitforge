@@ -61,7 +61,7 @@ export default function FoodGrid({ foods, isLoading, onSelectFood, onEdit, onDel
       {foods.map((food) => (
         <Card
           key={food.id}
-          className="border-none shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden"
+          className="border-none shadow-lg hover:shadow-2xl transition-all duration-300 group overflow-hidden hover:scale-[1.03] hover:-translate-y-1"
         >
           <div 
             className="h-40 bg-gradient-to-br from-purple-400 to-blue-500 relative overflow-hidden cursor-pointer"
@@ -102,7 +102,7 @@ export default function FoodGrid({ foods, isLoading, onSelectFood, onEdit, onDel
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-gray-500 hover:text-purple-600"
+                  className="h-8 w-8 text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition-all duration-200"
                   onClick={(e) => {
                     e.stopPropagation();
                     onEdit(food);
@@ -113,7 +113,7 @@ export default function FoodGrid({ foods, isLoading, onSelectFood, onEdit, onDel
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-gray-500 hover:text-red-600"
+                  className="h-8 w-8 text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all duration-200"
                   onClick={(e) => {
                     e.stopPropagation();
                     onDelete(food.id);
@@ -124,7 +124,7 @@ export default function FoodGrid({ foods, isLoading, onSelectFood, onEdit, onDel
               </div>
             </div>
             
-            <Badge className={`${categoryColors[food.category]} border mb-3`}>
+            <Badge className={`${categoryColors[food.category]} border-0 shadow-md mb-3`}>
               {categoryLabels[food.category]}
             </Badge>
 

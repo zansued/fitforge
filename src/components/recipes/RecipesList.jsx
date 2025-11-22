@@ -50,7 +50,7 @@ export default function RecipesList({ recipes, isLoading, onSelectRecipe, onTogg
       {recipes.map((recipe) => (
         <Card
           key={recipe.id}
-          className="border-none shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden cursor-pointer"
+          className="border-none shadow-lg hover:shadow-2xl transition-all duration-300 group overflow-hidden cursor-pointer hover:scale-[1.03] hover:-translate-y-1"
           onClick={() => onSelectRecipe(recipe)}
         >
           <div className="h-48 bg-gray-200 relative overflow-hidden">
@@ -68,14 +68,14 @@ export default function RecipesList({ recipes, isLoading, onSelectRecipe, onTogg
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-3 right-3 bg-white/90 hover:bg-white shadow-lg"
+              className="absolute top-3 right-3 bg-white/90 hover:bg-white shadow-lg hover:scale-110 transition-transform duration-200"
               onClick={(e) => {
                 e.stopPropagation();
                 onToggleFavorite(recipe);
               }}
             >
               <Heart
-                className={`w-5 h-5 ${recipe.is_favorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                className={`w-5 h-5 transition-all duration-200 ${recipe.is_favorite ? 'fill-red-500 text-red-500 scale-110' : 'text-gray-600'}`}
               />
             </Button>
           </div>
@@ -89,11 +89,11 @@ export default function RecipesList({ recipes, isLoading, onSelectRecipe, onTogg
             </p>
 
             <div className="flex flex-wrap gap-2 mb-4">
-              <Badge className={`${categoryColors[recipe.category]} border`}>
+              <Badge className={`${categoryColors[recipe.category]} border-0 shadow-md`}>
                 {categoryLabels[recipe.category]}
               </Badge>
               {recipe.difficulty && (
-                <Badge variant="outline" className="capitalize">
+                <Badge variant="outline" className="capitalize border-2 shadow-sm">
                   {recipe.difficulty}
                 </Badge>
               )}

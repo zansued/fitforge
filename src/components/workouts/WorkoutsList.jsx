@@ -43,9 +43,9 @@ export default function WorkoutsList({ workouts, isLoading, onToggleComplete }) 
       {workouts.map((workout) => (
         <Card 
           key={workout.id}
-          className="border-none shadow-lg hover:shadow-xl transition-all duration-300"
+          className="border-none shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.01] hover:-translate-y-1"
         >
-          <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50 border-b">
+          <CardHeader className="bg-gradient-to-r from-purple-50 via-blue-50 to-cyan-50 border-b border-purple-100">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
@@ -65,10 +65,10 @@ export default function WorkoutsList({ workouts, isLoading, onToggleComplete }) 
                 </div>
                 <p className="text-sm text-gray-600 mb-3">{workout.description}</p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge className={`${typeColors[workout.type]} border`}>
+                  <Badge className={`${typeColors[workout.type]} border-0 shadow-md`}>
                     {workout.type}
                   </Badge>
-                  <Badge variant="outline" className="capitalize">
+                  <Badge variant="outline" className="capitalize border-2 shadow-sm">
                     {workout.difficulty}
                   </Badge>
                   <Badge variant="outline" className="flex items-center gap-1">

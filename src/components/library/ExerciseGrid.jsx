@@ -41,7 +41,7 @@ export default function ExerciseGrid({ exercises, isLoading, onSelectExercise, o
       {exercises.map((exercise) => (
         <Card
           key={exercise.id}
-          className="border-none shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden"
+          className="border-none shadow-lg hover:shadow-2xl transition-all duration-300 group overflow-hidden hover:scale-[1.03] hover:-translate-y-1"
         >
           <div 
             className="h-48 bg-gradient-to-br from-purple-400 to-blue-500 relative overflow-hidden cursor-pointer"
@@ -71,7 +71,7 @@ export default function ExerciseGrid({ exercises, isLoading, onSelectExercise, o
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-gray-500 hover:text-purple-600"
+                  className="h-8 w-8 text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition-all duration-200"
                   onClick={(e) => {
                     e.stopPropagation();
                     onEdit(exercise);
@@ -82,7 +82,7 @@ export default function ExerciseGrid({ exercises, isLoading, onSelectExercise, o
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-gray-500 hover:text-red-600"
+                  className="h-8 w-8 text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all duration-200"
                   onClick={(e) => {
                     e.stopPropagation();
                     onDelete(exercise.id);
@@ -96,13 +96,13 @@ export default function ExerciseGrid({ exercises, isLoading, onSelectExercise, o
               {exercise.instructions}
             </p>
             <div className="flex flex-wrap gap-2">
-              <Badge className={`${categoryColors[exercise.category]} border`}>
+              <Badge className={`${categoryColors[exercise.category]} border-0 shadow-md`}>
                 {exercise.category}
               </Badge>
-              <Badge variant="outline" className="capitalize">
+              <Badge variant="outline" className="capitalize border-2 shadow-sm">
                 {exercise.difficulty}
               </Badge>
-              <Badge variant="outline" className="capitalize">
+              <Badge variant="outline" className="capitalize border-2 shadow-sm">
                 {exercise.equipment?.replace(/_/g, ' ')}
               </Badge>
             </div>
