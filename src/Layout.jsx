@@ -141,17 +141,17 @@ export default function Layout({ children }) {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
-        <Sidebar className="border-r border-gray-200/50 backdrop-blur-sm">
+        <Sidebar className="border-r border-gray-200/50 backdrop-blur-sm bg-white/50">
           <SidebarHeader className="border-b border-gray-200/50 p-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Dumbbell className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-xl shadow-purple-500/20 transform hover:scale-105 transition-transform duration-300">
+                <Dumbbell className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h2 className="font-bold text-xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                <h2 className="font-bold text-xl bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
                   FitPersonal
                 </h2>
-                <p className="text-xs text-gray-500">Seu treino ideal</p>
+                <p className="text-xs text-gray-500 font-medium">Seu treino ideal</p>
               </div>
             </div>
           </SidebarHeader>
@@ -167,15 +167,15 @@ export default function Layout({ children }) {
                         <SidebarMenuButton 
                           asChild 
                           className={`
-                            transition-all duration-200 rounded-xl border-2
+                            transition-all duration-300 rounded-2xl border-2 transform hover:scale-[1.02]
                             ${isActive 
-                              ? `${item.colors.bgActive} ${item.colors.textActive} shadow-lg border-transparent` 
-                              : `${item.colors.bg} ${item.colors.text} ${item.colors.bgHover} ${item.colors.border}`
+                              ? `${item.colors.bgActive} ${item.colors.textActive} shadow-xl shadow-${item.colors.bgActive.split('-')[1]}-500/30 border-transparent scale-[1.02]` 
+                              : `${item.colors.bg} ${item.colors.text} ${item.colors.bgHover} ${item.colors.border} hover:shadow-lg`
                             }
                           `}
                         >
                           <Link to={item.url} className="flex items-center gap-3 px-4 py-3">
-                            <item.icon className="w-6 h-6" />
+                            <item.icon className={`w-6 h-6 transition-transform duration-300 ${isActive ? 'scale-110' : ''}`} />
                             <span className="font-semibold text-base">{item.title}</span>
                           </Link>
                         </SidebarMenuButton>
@@ -186,19 +186,21 @@ export default function Layout({ children }) {
               </SidebarGroupContent>
             </SidebarGroup>
 
-            <div className="mt-6 mx-3 p-4 bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-xl border border-purple-200/50">
+            <div className="mt-6 mx-3 p-5 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-cyan-500/10 rounded-2xl border-2 border-purple-200/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-purple-300">
               <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-5 h-5 text-purple-600" />
-                <h3 className="font-semibold text-sm text-gray-900">Progresso</h3>
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center shadow-md">
+                  <TrendingUp className="w-4 h-4 text-white" />
+                </div>
+                <h3 className="font-bold text-sm text-gray-900">Progresso</h3>
               </div>
-              <p className="text-xs text-gray-600 mb-3">Continue evoluindo!</p>
+              <p className="text-xs text-gray-600 mb-3 font-medium">Continue evoluindo!</p>
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-600">Meta Semanal</span>
-                  <span className="font-semibold text-purple-600">0/3</span>
+                  <span className="text-gray-600 font-medium">Meta Semanal</span>
+                  <span className="font-bold text-purple-600">0/3</span>
                 </div>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full w-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full transition-all duration-500"></div>
+                <div className="h-2.5 bg-gray-200/80 rounded-full overflow-hidden shadow-inner">
+                  <div className="h-full w-0 bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 rounded-full transition-all duration-500 shadow-lg"></div>
                 </div>
               </div>
             </div>
@@ -206,12 +208,12 @@ export default function Layout({ children }) {
         </Sidebar>
 
         <main className="flex-1 flex flex-col">
-          <header className="bg-white/70 backdrop-blur-md border-b border-gray-200/50 px-6 py-4 md:hidden sticky top-0 z-10">
+          <header className="bg-white/80 backdrop-blur-xl border-b border-gray-200/50 px-6 py-4 md:hidden sticky top-0 z-10 shadow-sm">
             <div className="flex items-center gap-4">
-              <SidebarTrigger className="hover:bg-gray-100 p-2 rounded-lg transition-colors duration-200">
+              <SidebarTrigger className="hover:bg-gradient-to-br hover:from-purple-50 hover:to-blue-50 p-2 rounded-xl transition-all duration-300 hover:shadow-md">
                 <Menu className="w-5 h-5" />
               </SidebarTrigger>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
                 FitPersonal
               </h1>
             </div>
