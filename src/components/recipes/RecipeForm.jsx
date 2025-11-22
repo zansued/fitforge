@@ -85,10 +85,29 @@ export default function RecipeForm({ recipe, onSave, onCancel }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (!formData.title || !formData.category) {
+      alert("Por favor, preencha os campos obrigatórios (Nome e Categoria)");
+      return;
+    }
+    
+    const cleanedIngredients = formData.ingredients.filter(i => i.food_id || i.food_name);
+    const cleanedInstructions = formData.instructions.filter(i => i && i.trim());
+    
+    if (cleanedIngredients.length === 0) {
+      alert("Adicione pelo menos um ingrediente");
+      return;
+    }
+    
+    if (cleanedInstructions.length === 0) {
+      alert("Adicione pelo menos um passo no modo de preparo");
+      return;
+    }
+    
     const cleanedData = {
       ...formData,
-      ingredients: formData.ingredients.filter(i => i.food_id || i.food_name),
-      instructions: formData.instructions.filter(i => i.trim())
+      ingredients: cleanedIngredients,
+      instructions: cleanedInstructions
     };
     onSave(cleanedData);
   };
