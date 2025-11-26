@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { base44 } from "@/api/base44Client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Save, X } from "lucide-react";
+import { Save, X, Sparkles, Loader2 } from "lucide-react";
 
 export default function FoodForm({ food, onSave, onCancel }) {
   const [formData, setFormData] = useState(food || {
@@ -21,6 +22,60 @@ export default function FoodForm({ food, onSave, onCancel }) {
     image_url: "",
     benefits: ""
   });
+  const [isSearching, setIsSearching] = useState(false);
+
+  const searchFoodInfo = async () => {
+    if (!formData.name.trim()) {
+      alert("Digite o nome do alimento primeiro");
+      return;
+    }
+    
+    setIsSearching(true);
+    try {
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `Pesquise informações nutricionais precisas sobre o alimento "${formData.name}". 
+Forneça dados para uma porção de 100g. Se não encontrar dados exatos, forneça estimativas baseadas em alimentos similares.
+Inclua também uma breve descrição do alimento e seus principais benefícios para a saúde.`,
+        add_context_from_internet: true,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            description: { type: "string", description: "Breve descrição do alimento" },
+            category: { 
+              type: "string", 
+              enum: ["frutas", "vegetais", "carnes", "peixes", "graos", "laticinios", "ovos", "oleaginosas", "leguminosas", "cereais", "temperos", "outros"]
+            },
+            calories: { type: "number", description: "Calorias por 100g" },
+            protein_grams: { type: "number", description: "Proteínas em gramas por 100g" },
+            carbs_grams: { type: "number", description: "Carboidratos em gramas por 100g" },
+            fat_grams: { type: "number", description: "Gorduras em gramas por 100g" },
+            fiber_grams: { type: "number", description: "Fibras em gramas por 100g" },
+            benefits: { type: "string", description: "Principais benefícios para a saúde" }
+          },
+          required: ["calories", "protein_grams", "carbs_grams", "fat_grams"]
+        }
+      });
+
+      if (response) {
+        setFormData(prev => ({
+          ...prev,
+          description: response.description || prev.description,
+          category: response.category || prev.category,
+          serving_size: 100,
+          calories: response.calories || 0,
+          protein_grams: response.protein_grams || 0,
+          carbs_grams: response.carbs_grams || 0,
+          fat_grams: response.fat_grams || 0,
+          fiber_grams: response.fiber_grams || 0,
+          benefits: response.benefits || prev.benefits
+        }));
+      }
+    } catch (error) {
+      console.error("Erro ao pesquisar alimento:", error);
+      alert("Erro ao pesquisar informações. Tente novamente.");
+    }
+    setIsSearching(false);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -38,13 +93,32 @@ export default function FoodForm({ food, onSave, onCancel }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="name">Nome do Alimento *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                placeholder="Ex: Banana"
-                required
-              />
+              <div className="flex gap-2">
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  placeholder="Ex: Banana"
+                  required
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  onClick={searchFoodInfo}
+                  disabled={isSearching || !formData.name.trim()}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                >
+                  {isSearching ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Pesquisar
+                    </>
+                  )}
+                </Button>
+              </div>
+              <p className="text-xs text-gray-500">Digite o nome e clique em Pesquisar para preencher automaticamente</p>
             </div>
 
             <div className="space-y-2 md:col-span-2">
