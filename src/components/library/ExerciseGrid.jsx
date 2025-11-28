@@ -9,6 +9,7 @@ export default function ExerciseGrid({ exercises, isLoading, onSelectExercise, o
     peito: "bg-purple-100 text-purple-700 border-purple-200",
     costas: "bg-blue-100 text-blue-700 border-blue-200",
     pernas: "bg-green-100 text-green-700 border-green-200",
+    gluteos: "bg-rose-100 text-rose-700 border-rose-200",
     ombros: "bg-orange-100 text-orange-700 border-orange-200",
     bracos: "bg-pink-100 text-pink-700 border-pink-200",
     abdomen: "bg-cyan-100 text-cyan-700 border-cyan-200",

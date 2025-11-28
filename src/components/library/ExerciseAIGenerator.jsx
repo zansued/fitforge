@@ -17,6 +17,7 @@ export default function ExerciseAIGenerator({ onClose, onGenerated }) {
     peito: "Peito",
     costas: "Costas",
     pernas: "Pernas",
+    gluteos: "Glúteos",
     ombros: "Ombros",
     bracos: "Braços",
     abdomen: "Abdômen",
@@ -143,6 +144,7 @@ Seja criativo mas mantenha a segurança e eficácia.`;
                     <SelectItem value="peito">Peito</SelectItem>
                     <SelectItem value="costas">Costas</SelectItem>
                     <SelectItem value="pernas">Pernas</SelectItem>
+                    <SelectItem value="gluteos">Glúteos</SelectItem>
                     <SelectItem value="ombros">Ombros</SelectItem>
                     <SelectItem value="bracos">Braços</SelectItem>
                     <SelectItem value="abdomen">Abdômen</SelectItem>
