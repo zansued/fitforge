@@ -76,6 +76,7 @@ export default function ExerciseForm({ exercise, onSave, onCancel }) {
                   <SelectItem value="peito">Peito</SelectItem>
                   <SelectItem value="costas">Costas</SelectItem>
                   <SelectItem value="pernas">Pernas</SelectItem>
+                  <SelectItem value="gluteos">Glúteos</SelectItem>
                   <SelectItem value="ombros">Ombros</SelectItem>
                   <SelectItem value="bracos">Braços</SelectItem>
                   <SelectItem value="abdomen">Abdômen</SelectItem>
