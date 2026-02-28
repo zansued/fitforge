@@ -140,15 +140,30 @@ export default function ExerciseForm({ exercise, onSave, onCancel }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="image">Imagem do Exercício</Label>
-            <Input
-              id="image"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
+            <Label>Imagem do Exercício</Label>
+            <div className="space-y-2">
+              <Input
+                placeholder="URL da imagem (https://...)"
+                value={formData.image_url}
+                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+              />
+              <div className="flex items-center gap-2 text-xs text-gray-400">
+                <span>ou</span>
+                <div className="flex-1 border-t border-gray-200"></div>
+                <span>fazer upload</span>
+                <div className="flex-1 border-t border-gray-200"></div>
+              </div>
+              <Input
+                id="image"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </div>
             {imageFile && <p className="text-sm text-gray-500">Arquivo selecionado: {imageFile.name}</p>}
-            {formData.image_url && !imageFile && <p className="text-sm text-gray-500">Imagem existente. Envie um novo arquivo para substituir.</p>}
+            {formData.image_url && !imageFile && (
+              <img src={formData.image_url} alt="Preview" className="h-24 rounded-lg object-cover border" />
+            )}
           </div>
 
           <div className="space-y-2">
