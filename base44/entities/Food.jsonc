@@ -1,0 +1,103 @@
+{
+  "name": "Food",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nome do alimento"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o do alimento"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "frutas",
+        "vegetais",
+        "carnes",
+        "peixes",
+        "graos",
+        "laticinios",
+        "ovos",
+        "oleaginosas",
+        "leguminosas",
+        "cereais",
+        "temperos",
+        "outros"
+      ],
+      "description": "Categoria do alimento"
+    },
+    "serving_size": {
+      "type": "number",
+      "description": "Tamanho da por\u00e7\u00e3o padr\u00e3o em gramas"
+    },
+    "calories": {
+      "type": "number",
+      "description": "Calorias por por\u00e7\u00e3o"
+    },
+    "protein_grams": {
+      "type": "number",
+      "description": "Prote\u00ednas em gramas por por\u00e7\u00e3o"
+    },
+    "carbs_grams": {
+      "type": "number",
+      "description": "Carboidratos em gramas por por\u00e7\u00e3o"
+    },
+    "fat_grams": {
+      "type": "number",
+      "description": "Gorduras em gramas por por\u00e7\u00e3o"
+    },
+    "fiber_grams": {
+      "type": "number",
+      "description": "Fibras em gramas por por\u00e7\u00e3o"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "URL da imagem do alimento"
+    },
+    "benefits": {
+      "type": "string",
+      "description": "Benef\u00edcios nutricionais"
+    },
+    "is_favorite": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se \u00e9 alimento favorito"
+    }
+  },
+  "required": [
+    "name",
+    "category",
+    "serving_size",
+    "calories"
+  ],
+  "rls": {
+    "create": {},
+    "read": {},
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

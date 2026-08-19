@@ -1,0 +1,81 @@
+{
+  "name": "UserProfile",
+  "type": "object",
+  "properties": {
+    "age": {
+      "type": "number",
+      "description": "Idade do usu\u00e1rio"
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "masculino",
+        "feminino",
+        "outro"
+      ],
+      "description": "G\u00eanero"
+    },
+    "weight": {
+      "type": "number",
+      "description": "Peso atual em kg"
+    },
+    "height": {
+      "type": "number",
+      "description": "Altura em cm"
+    },
+    "fitness_level": {
+      "type": "string",
+      "enum": [
+        "iniciante",
+        "intermediario",
+        "avancado"
+      ],
+      "description": "N\u00edvel de condicionamento"
+    },
+    "goal": {
+      "type": "string",
+      "enum": [
+        "perder_peso",
+        "ganhar_massa",
+        "definir",
+        "melhorar_condicionamento",
+        "manter_forma"
+      ],
+      "description": "Objetivo principal"
+    },
+    "days_per_week": {
+      "type": "number",
+      "description": "Dias dispon\u00edveis para treinar por semana",
+      "minimum": 1,
+      "maximum": 7
+    },
+    "health_issues": {
+      "type": "string",
+      "description": "Problemas de sa\u00fade ou les\u00f5es"
+    },
+    "preferences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Prefer\u00eancias de exerc\u00edcios"
+    }
+  },
+  "required": [
+    "fitness_level",
+    "goal",
+    "days_per_week"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

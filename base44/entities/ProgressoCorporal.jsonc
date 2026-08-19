@@ -1,0 +1,71 @@
+{
+  "name": "ProgressoCorporal",
+  "type": "object",
+  "properties": {
+    "data_medicao": {
+      "type": "string",
+      "format": "date",
+      "description": "Data em que a medi\u00e7\u00e3o foi feita"
+    },
+    "peso": {
+      "type": "number",
+      "description": "Peso em quilogramas"
+    },
+    "altura": {
+      "type": "number",
+      "description": "Altura em cent\u00edmetros (registrada uma vez, pode ser \u00fatil)"
+    },
+    "medida_peito": {
+      "type": "number",
+      "description": "Medida do peito em cm"
+    },
+    "medida_cintura": {
+      "type": "number",
+      "description": "Medida da cintura em cm"
+    },
+    "medida_quadril": {
+      "type": "number",
+      "description": "Medida do quadril em cm"
+    },
+    "medida_braco_d": {
+      "type": "number",
+      "description": "Medida do bra\u00e7o direito em cm"
+    },
+    "medida_braco_e": {
+      "type": "number",
+      "description": "Medida do bra\u00e7o esquerdo em cm"
+    },
+    "medida_coxa_d": {
+      "type": "number",
+      "description": "Medida da coxa direita em cm"
+    },
+    "medida_coxa_e": {
+      "type": "number",
+      "description": "Medida da coxa esquerda em cm"
+    },
+    "foto_url": {
+      "type": "string",
+      "description": "URL da foto de progresso"
+    },
+    "notas": {
+      "type": "string",
+      "description": "Anota\u00e7\u00f5es sobre o dia (como se sentiu, etc)"
+    }
+  },
+  "required": [
+    "data_medicao",
+    "peso"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "ExameSaude",
+  "type": "object",
+  "properties": {
+    "data_exame": {
+      "type": "string",
+      "format": "date",
+      "description": "Data em que o exame foi realizado"
+    },
+    "tipo_exame": {
+      "type": "string",
+      "enum": [
+        "hemograma",
+        "colesterol",
+        "glicemia",
+        "hormonal",
+        "vitaminas",
+        "completo",
+        "outro"
+      ],
+      "description": "Tipo de exame realizado"
+    },
+    "arquivo_url": {
+      "type": "string",
+      "description": "URL do arquivo do exame (PDF ou imagem)"
+    },
+    "dados_extraidos": {
+      "type": "object",
+      "description": "Dados extra\u00eddos do exame pela IA"
+    },
+    "analise_ia": {
+      "type": "string",
+      "description": "An\u00e1lise e recomenda\u00e7\u00f5es da IA"
+    },
+    "notas": {
+      "type": "string",
+      "description": "Anota\u00e7\u00f5es pessoais sobre o exame"
+    }
+  },
+  "required": [
+    "data_exame",
+    "tipo_exame"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

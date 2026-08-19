@@ -1,0 +1,97 @@
+{
+  "name": "Exercise",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nome do exerc\u00edcio"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "peito",
+        "costas",
+        "pernas",
+        "ombros",
+        "bracos",
+        "abdomen",
+        "gluteos",
+        "cardio"
+      ],
+      "description": "Categoria do exerc\u00edcio"
+    },
+    "equipment": {
+      "type": "string",
+      "enum": [
+        "barra",
+        "halteres",
+        "maquina",
+        "peso_corporal",
+        "cabo",
+        "kettlebell",
+        "nenhum"
+      ],
+      "description": "Equipamento necess\u00e1rio"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "iniciante",
+        "intermediario",
+        "avancado"
+      ],
+      "description": "N\u00edvel de dificuldade"
+    },
+    "instructions": {
+      "type": "string",
+      "description": "Instru\u00e7\u00f5es de execu\u00e7\u00e3o"
+    },
+    "tips": {
+      "type": "string",
+      "description": "Dicas importantes"
+    },
+    "video_url": {
+      "type": "string",
+      "description": "URL do v\u00eddeo demonstrativo"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "URL da imagem"
+    }
+  },
+  "required": [
+    "name",
+    "category",
+    "equipment",
+    "difficulty",
+    "instructions"
+  ],
+  "rls": {
+    "create": {},
+    "read": {},
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

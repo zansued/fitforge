@@ -1,0 +1,126 @@
+{
+  "name": "Recipe",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Nome da receita"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o breve da receita"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "cafe_da_manha",
+        "almoco",
+        "jantar",
+        "lanche",
+        "pre_treino",
+        "pos_treino",
+        "sobremesa"
+      ],
+      "description": "Categoria da refei\u00e7\u00e3o"
+    },
+    "prep_time_minutes": {
+      "type": "number",
+      "description": "Tempo de preparo em minutos"
+    },
+    "servings": {
+      "type": "number",
+      "description": "N\u00famero de por\u00e7\u00f5es"
+    },
+    "calories_per_serving": {
+      "type": "number",
+      "description": "Calorias por por\u00e7\u00e3o"
+    },
+    "protein_grams": {
+      "type": "number",
+      "description": "Prote\u00ednas em gramas por por\u00e7\u00e3o"
+    },
+    "carbs_grams": {
+      "type": "number",
+      "description": "Carboidratos em gramas por por\u00e7\u00e3o"
+    },
+    "fat_grams": {
+      "type": "number",
+      "description": "Gorduras em gramas por por\u00e7\u00e3o"
+    },
+    "ingredients": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "food_id": {
+            "type": "string",
+            "description": "ID do alimento na biblioteca"
+          },
+          "food_name": {
+            "type": "string",
+            "description": "Nome do alimento"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantidade em gramas"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Observa\u00e7\u00f5es sobre o ingrediente"
+          }
+        }
+      },
+      "description": "Lista de ingredientes estruturados"
+    },
+    "instructions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Passos de preparo"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags como 'vegetariano', 'low carb', etc"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "URL da imagem da receita"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "facil",
+        "medio",
+        "dificil"
+      ],
+      "description": "N\u00edvel de dificuldade"
+    },
+    "is_favorite": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se \u00e9 receita favorita"
+    }
+  },
+  "required": [
+    "title",
+    "category",
+    "ingredients",
+    "instructions"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}
